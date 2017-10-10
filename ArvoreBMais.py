@@ -1,5 +1,5 @@
 
-class noArvore():
+class noArvore:
 
     def __init__(self,qtdCampos):
         self.tamanhoDoBlocoDePaginas = 8000
@@ -8,12 +8,14 @@ class noArvore():
         self.entradas = list()
         self.raiz = False
         self.folha = True
+        self.ocupacaoMaxima = (self.tamanhoDoBlocoDePaginas / (self.qtdCampos * 4))
+        self.ocupacaoMinima = ((self.tamanhoDoBlocoDePaginas / 2) / (self.qtdCampos * 4))
 
-    def definiOCupacaoMaxima(self):
-        self.ocupacaoMaxima = (self.tamanhoDoBlocoDePaginas/(self.qtdCampos*4))
+    def returnFolha(self):
+        return self.folha
 
-    def definiOcupacaoMinima(self):
-        self.ocupacaoMinima = ((self.tamanhoDoBlocoDePaginas/2)/(self.qtdCampos*4))
+    def returnRaiz(self):
+        return self.raiz
 
     def verificaSePaginaFolhaEncheu(self):
 
