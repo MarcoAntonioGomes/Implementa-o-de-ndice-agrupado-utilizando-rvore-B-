@@ -7,7 +7,7 @@ def pesquisarNaArvore(Arvore,chave):
             #print(Arvore.entradas[i])
             print("Chave",chave," == Indice ",Arvore.entradas[i][0])
             if(chave == Arvore.entradas[i][0]):
-                return entrada[i]
+                return Arvore.entradas[i]
         return None
     else :
 
@@ -21,7 +21,7 @@ def pesquisarNaArvore(Arvore,chave):
                 if(chave >= Arvore.indices[i] and chave < Arvore.indices[i+1]):
 
 
-                    return pesquisarNaArvore(Arvore.entradas[i],chave)
+                    return pesquisarNaArvore(Arvore.entradas[i+1],chave)
 
 
         if (chave >= Arvore.indices[(len(Arvore.indices)-1)]):
