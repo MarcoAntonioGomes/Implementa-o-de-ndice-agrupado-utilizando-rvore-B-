@@ -2,6 +2,7 @@ from ArvoreBMais import *
 from inserirNaArvore import *
 from random import randint
 from pesquisaChaveNaArvore import*
+from pesquisaPorIntervaloArvore import*
 
 if __name__ == "__main__":
 
@@ -43,3 +44,4 @@ if __name__ == "__main__":
     for i in range(25):
         entrada.append(randint(0, 10000))
     Arvore = inserirNaArvore(Arvore, entrada, novaentrada, 25)
+    pesquisaIntervaloArvore(Arvore,chave, chave+100)

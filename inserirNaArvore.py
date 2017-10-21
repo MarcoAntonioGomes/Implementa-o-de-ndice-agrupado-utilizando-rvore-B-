@@ -88,6 +88,11 @@ def inserirNaArvore(no, entrada, novaentradafilha, qtdCampos):
                 no.indices.append(novaentradafilha[0])
                 no.indices.sort();
                 no.entradas.insert((no.indices.index(novaentradafilha[0])+1),novaentradafilha[1])
+                atual = (no.indices.index(novaentradafilha[0]) + 1)
+
+                if(no.irmao != None):
+                #   print(no.irmao.entradas[0].folha)
+                    no.entradas[len(no.entradas)-1].proximo = no.irmao.entradas[0]
                 #print(len(no.entradas))
                 novaentradafilha = None
                 return salvaRaiz
@@ -108,6 +113,12 @@ def inserirNaArvore(no, entrada, novaentradafilha, qtdCampos):
                 no.indices.append(novaentradafilha[0])
                 no.indices.sort();
                 no.entradas.insert((no.indices.index(novaentradafilha[0])+1),novaentradafilha[1])
+                if(no.irmao == None):
+                   no.irmao = no2
+                else:
+                   no2.irmao = no.irmao
+                   no.irmao = no2.irmao
+
                 #print("Dividi No Interno")
                 novaentradafilha = ((min(no2.indices)),no2)
                 #print("Nova Entrada 2", novaentradafilha)
@@ -156,6 +167,13 @@ def inserirNaArvore(no, entrada, novaentradafilha, qtdCampos):
                 folhaNo.entradas.sort()
             for i in range(len(folhaNo.entradas)):
                 no.entradas.remove(folhaNo.entradas[i])
+            if(no.proximo == None):
+                no.proximo = folhaNo
+                folhaNo.anterior = no
+            else:
+                folhaNo.proximo = no.proximo
+                no.proximo.anterior = folhaNo
+                no.proximo = folhaNo
 
             novaentradafilha = (menorChave,folhaNo)
             if(no.raiz):

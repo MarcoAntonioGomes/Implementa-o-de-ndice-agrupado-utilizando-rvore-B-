@@ -1,9 +1,15 @@
-indices = list()
-indices.append(2)
-indices.append(5)
-indices.append(10)
-indices.append(1)
-indices.insert(0,55)
+
+class teste:
+
+    def __init__(self):
+
+        self.indices = list()
+
+    def insereValor(self, valor):
+        self.indices.append(valor)
 
 
-print(indices)
+def alteraIndice(var):
+    var.indices.append(5)
+
+
