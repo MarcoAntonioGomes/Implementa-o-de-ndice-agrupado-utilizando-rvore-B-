@@ -12,12 +12,12 @@ def inserirNaArvore(no, entrada, novaentradafilha, qtdCampos):
         salvaRaiz = no
     if not ( no.folha):
         if (entrada[0] < no.indices[0]):
-            # print("Entrei no 1ª IF")
+            #print("Entrei no 1ª IF")
             # print(no)
 
             novaentradafilha = inserirNaArvore(no.entradas[0], entrada, novaentradafilha, qtdCampos)
         if ( entrada[0] >= no.indices[(len(no.indices)-1)]):
-            # print("Entrei no 2ª IF")
+            #print("Entrei no 2ª IF")
             # print(no)
 
             novaentradafilha = inserirNaArvore(no.entradas[(len(no.indices))], entrada, novaentradafilha, qtdCampos)
