@@ -1,5 +1,13 @@
 
 
+
+#Função para encontrar no nó pai um irmão que tenha chave extras para distribuir com irmão que esta com chaves abaixo do mínimo
+def encontraRIrmaoChavesExtras(NoPai):
+    for i in range(len(NoPai.entradas)):
+        if not (NoPai.entradas[i].verificaSeNoInternoMinimo()):
+            return NoPai.entradas[i]
+    return None
+
 def encontraRIrmaoEntradasExtras(NoPai):
     for i in range(len(NoPai.entradas)):
         if not (NoPai.entradas[i].verificaSePaginaFolhaCapacidadeMinima()):
@@ -7,17 +15,13 @@ def encontraRIrmaoEntradasExtras(NoPai):
         return None
 
 
-def encontraRIrmaoChavesExtras(NoPai):
-    for i in range(len(NoPai.entradas)):
-        if not (NoPai.entradas[i].verificaSeNoInternoMinimo()):
-            return NoPai.entradas[i]
-    return None
 
-
+#Função para redistribuir as chaves entre os irmão afim de manter a estrutura da árvore
+#Os parâmetros N e S são nós irmãos
 def redistribuirChavesInternas(N,S):
     mediana = int(N.ocupacaoMaxima/2)
 
-    #print("Estou redistribuindo as chaves internas")
+
 
     for i in range(mediana,(len(S.indices))):
         indiceARemover = S.indices[i]
@@ -28,9 +32,11 @@ def redistribuirChavesInternas(N,S):
         S.indices.remove(indiceARemover)
         S.entradas.remove(ponteiroARemover)
 
+#Função para intercalar, juntar duas páginas, que estão com chaves abaixo ou no mínimo da quntidade estabelecida
+#Os parâmetros N e M são nós irmãos, chaveDeDivisão é a chave no pai que da acesso aos duas páginas filhas irmãs
+#Para intercalar deve se descer do pai a chaveDeDivisão para a nova página abaixo que esta unificando os dois irmãos antigos
 def intercalarChavesInternas(N,M,chaveDeDivisao):
 
-    #print("Estou Intercalando as Chaves Internas")
 
     N.indices.append(ChaveDeDivisao)
     entradaAMover = M.entradas[0]
@@ -45,7 +51,6 @@ def intercalarChavesInternas(N,M,chaveDeDivisao):
 def redistribuirEntradasFolhas(N,S):
 
     qtdDeEntradasExtras = len(S.entradas)
-    #print("Estou Redistribuindo as Folhas")
     if not (S.verificaSePaginaFolhaCapacidadeMinima()):
         for i in range(qtdDeEntradasExtras):
 
@@ -67,12 +72,26 @@ def intercalarEntradasFolha(N,M):
 
     N.proximo = M.proximo
 
+"""
+Função para remoção de registros da árvore 
 
+Parâmetros
+
+ponteiropai - nó da árvore que é pai de outros nós subsequentes na subarvore, usado para acesso ao irmão para intercalação de página e redistribuição de registros ou chaves 
+entre os nós irmãos (A variável esta com nome de ponteiro devido ao pseudocódigo do Ramakrishan que trabalha com ponteiros, mas que aqui é somente a referência do objeto) 
+
+entrada - chave do registro a ser removido
+
+ponteirono - Inicialmente nó raiz da árvore, depois vai sendo alterado recursivamente conforme a busca pela página folha para remoção acontece.
+
+entradafilhaantiga - usada para realizar as devidas alterações nos nós pais quando duas páginas forem intercaladas ou quando houver redistribuição de chaves ou registros
+
+"""
 
 def excluirDaArvore(ponteiropai, ponteirono, entrada, entradafilhaantiga):
 
     if not (ponteirono.folha):
-
+        #Busca recursivamente a página folha adequada para a remoção do registro
 
         if (entrada < ponteirono.indices[0]):
             entradafilhaantiga = excluirDaArvore(ponteirono,ponteirono.entradas[0], entrada, entradafilhaantiga)
@@ -86,7 +105,7 @@ def excluirDaArvore(ponteiropai, ponteirono, entrada, entradafilhaantiga):
             entradafilhaantiga = excluirDaArvore(ponteirono, ponteirono.entradas[(len(ponteirono.indices))],entrada,entradafilhaantiga)
 
         if(entradafilhaantiga == None):
-            return
+            return #Processo de Remoção terminou
 
         else:
             if(ponteiropai != None):
@@ -96,10 +115,11 @@ def excluirDaArvore(ponteiropai, ponteirono, entrada, entradafilhaantiga):
                 return entradafilhaantiga
             elif(encontraRIrmaoChavesExtras(ponteiropai) != None):
 
-                        redistribuirChavesInternas(ponteirono,encontraRIrmaoChavesExtras(ponteiropai))
+                        redistribuirChavesInternas(ponteirono,encontraRIrmaoChavesExtras(ponteiropai)) #Redistribuição para nós internos
                         entradafilhaantiga = None
                         return entradafilhaantiga
             else:
+                #Intercalação de Páginas para nós internos
                 irmaoADireita = (ponteiropai.entradas[(ponteiropai.entradas.index(ponteirono))+1])
                 indiceADireita = ponteiropai.indices[(ponteiropai.entradas.index(ponteirono))]
                 intercalarChavesInternas(ponteirono,irmaoADireita,indiceADireita)
@@ -112,23 +132,26 @@ def excluirDaArvore(ponteiropai, ponteirono, entrada, entradafilhaantiga):
         if not (ponteirono.verificaSePaginaFolhaCapacidadeMinima()):
             for i in range((len(ponteirono.entradas))):
 
-                if (entrada == ponteirono.entradas[i][0]):
-                    ponteirono.entradas.remove( ponteirono.entradas[i])
+                if (entrada == ponteirono.entradas[i][0]): #Verifica se chave de busca é igual a primeira posição da lista que corresponde aos registros, que no caso é a chave
+                                                           #Conrrespondente aquele registro
+                    ponteirono.entradas.remove( ponteirono.entradas[i]) # Remove registro
                     entradafilhaantiga = None
                     return entradafilhaantiga
-        elif(encontraRIrmaoEntradasExtras(ponteiropai) != None):
-
+        elif(encontraRIrmaoEntradasExtras(ponteiropai) != None): # Se o nó esta na capacidade mínima ou abaixo dela e se tem irmão com registros extras
+                                                                 # Realiaza se a redistribuição uniformimente dos registros
             dadosRemove = encontraRIrmaoEntradasExtras(ponteiropai)
             noIrmao = dadosRemove[0]
             chaveDeAcesso = dadosRemove[1]
-            chaveDeTrocaNoPai = redistribuirEntradasFolhas(ponteirono,noIrmao)
-            ponteiropai.indices[ponteiropai.indices.index(chaveDeAcesso)] = chaveDeTrocaNoPai
+            chaveDeTrocaNoPai = redistribuirEntradasFolhas(ponteirono,noIrmao)# Chama a função para realizar a redistribuição
+            ponteiropai.indices[ponteiropai.indices.index(chaveDeAcesso)] = chaveDeTrocaNoPai # Troca as chaves que dão acesso as páginas para garantir a estrutura da árvore
             entradafilhaantiga = None
             return entradafilhaantiga
         else:
-            #print(len(ponteiropai.entradas))
-            #print(ponteiropai.entradas.index(ponteirono))
-            if((len(ponteiropai.entradas)-1) == ponteiropai.entradas.index(ponteirono)):
+            # Senão há irmãos com  registros extras realiza se a intercalação das páginas folhas
+            #Para que a intercalação funcione deve se passar pará o nó referência, as chavés do nó pagina a direita (irmão a direita)
+            #O if abaixo inverte os casos para que intercalação funcione quando se esta tentando intercalar um nó referencia e a direita dele não existe mais nós irmãos
+            #Logo pega se o nó a esquerda do ultimo e nó a direita fica sendo o ultima nó
+            if((len(ponteiropai.entradas)-1) == ponteiropai.entradas.index(ponteirono)): # Verifica se o indice do nó é equivalente ao ultimo nó no pai
                 irmaoAEsquerda = ponteiropai.entradas[(ponteiropai.entradas.index(ponteirono)) - 1 ]
                 intercalarEntradasFolha(irmaoAEsquerda, ponteirono)
                 return irmaoAEsquerda
